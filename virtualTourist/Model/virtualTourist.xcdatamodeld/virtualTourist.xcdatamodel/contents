@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="VTMapPin" representedClassName="VTMapPin" syncable="YES" codeGenerationType="class">
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="placeName" optional="YES" attributeType="String"/>
+        <relationship name="photo" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="VTPhoto" inverseName="mapPin" inverseEntity="VTPhoto"/>
+    </entity>
+    <entity name="VTPhoto" representedClassName="VTPhoto" syncable="YES" codeGenerationType="class">
+        <attribute name="caption" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="mapPin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="VTMapPin" inverseName="photo" inverseEntity="VTMapPin"/>
+    </entity>
+    <elements>
+        <element name="VTMapPin" positionX="-45" positionY="0" width="128" height="103"/>
+        <element name="VTPhoto" positionX="-18" positionY="54" width="128" height="103"/>
+    </elements>
+</model>
