@@ -33,6 +33,7 @@ extension VTClient {
         }
         if let withPageNumber = withPageNumber {
             parameters[FlickrParameterKeys.Page] = "\(withPageNumber)"
+            // print( "Retrieving page \(withPageNumber) of images" )
         }
          _ = VTClient.sharedInstance().httpTask(
                 HttpMethods.Get,
@@ -46,9 +47,15 @@ extension VTClient {
                 if let results = results?[FlickrResponseKeys.Photos] as? [String:AnyObject] {
                     if withPageNumber == nil {
                         // We pick a random page number and recursively request the results again
-                        if let pageCount = results[VTClient.FlickrResponseKeys.Pages]  {
-                            if UInt32(pageCount as! Int) > 1 {
-                                let pageNumber = Int( arc4random_uniform( UInt32(pageCount as! Int) ) )
+                        if let pageCount = results[VTClient.FlickrResponseKeys.Pages] {
+                            var pageNumber = pageCount as! Int
+                            if pageNumber > 1 {
+                                if pageNumber > 40 {
+                                    pageNumber = 40
+                                    // I think there is a bug in the Flickr API
+                                    // if you request a page > 40 you get page 1
+                                }
+                                pageNumber = Int( arc4random_uniform( UInt32(pageNumber) ) )
                                 self.retrieveImagesByLocation(latitude: latitude, longitude: longitude, limit: limit, withPageNumber: pageNumber, completionHandler: completionHandler )
                                 return
                             }

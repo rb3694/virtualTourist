@@ -52,12 +52,12 @@ class VTClient : NSObject {
         }
         
         // DEBUG CODE - Remove before release
-        //print( request.httpMethod + " " + (request.url?.absoluteString ?? "") )
-        //print( request.allHTTPHeaderFields ?? "" )
-        //if let theBody = request.httpBody {
-        //  print( NSString( data: theBody, encoding: String.Encoding.utf8.rawValue )! )
-        //}
-        //print( "" )
+        // print( request.httpMethod + " " + (request.url?.absoluteString ?? "") )
+        // print( request.allHTTPHeaderFields ?? "" )
+        // if let theBody = request.httpBody {
+        // print( NSString( data: theBody, encoding: String.Encoding.utf8.rawValue )! )
+        // }
+        // print( "" )
         // END DEBUG CODE - Remove prior to release
        
         /* 4. Make the request */
@@ -96,8 +96,8 @@ class VTClient : NSObject {
             
             /* 5/6. Parse the data and use the data (happens in completion handler) */
             // DEBUG CODE - Remove prior to release
-            //print( String(data: data, encoding: .utf8)! )
-            //print( "" )
+            // print( String(data: data, encoding: .utf8)! )
+            // print( "" )
             // END DEBUG CODE - Remove prior to release
 
             self.convertDataWithCompletionHandler( data, completionHandlerForConvertData: completionHandler )

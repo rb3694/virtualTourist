@@ -37,6 +37,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
             mapView.setCenter( annotation.coordinate, animated: true )
             mapView.showAnnotations( [annotation], animated: true )
         }
+        photoAlbum?.collection = self.collectionView;
 
         let space: CGFloat = 3.0
         let columns: CGFloat = ( collectionView.frame.size.width > collectionView.frame.size.height ) ? 3.0 : 2.0
@@ -44,22 +45,39 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         let width = (collectionView.frame.size.width - (2*space)) / columns
         let height = (collectionView.frame.size.height - (rows*space)) / rows
         
-        print( "Setting grid layout to \(rows) rows and \(columns) columns at WxH = \(width) x \(height)" )
+        // print( "Setting grid layout to \(rows) rows and \(columns) columns at WxH = \(width) x \(height)" )
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
         flowLayout.itemSize = CGSize( width: width, height: height )
         collectionView?.reloadData()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        photoAlbum?.collection = nil
+    }
 
     @IBAction func newCollectionRequested(_ sender: Any) {
+        // print( "newCollectionRequested" )
+        photoAlbum?.reloadImages()
+        collectionView.reloadData()
     }
+    
     // MARK: UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if let theDelegate : NSObject = collectionView.delegate as? NSObject {
+            if ( self == theDelegate )
+            {
+                print( "I am the delegate, so why am I not being called?" )
+            }
+        }
+        // print( "In collectionView...numberOfItemsInSection" )
+        // print( "Returning \(photoAlbum!.images.count)" )
         return photoAlbum!.images.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // print( "In collectionView...cellForItemAt \((indexPath as NSIndexPath).row)" )
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseId, for: indexPath) as! VTPhotoAlbumCell
 
         // Configure the cell
@@ -68,11 +86,20 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
-        
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        print( "in collectionView...shouldSelectItemAt \((indexPath as NSIndexPath).row)" )
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print( "In collectionView...didSelectItemAt \((indexPath as NSIndexPath).row) " )
         photoAlbum!.images.remove( at: (indexPath as NSIndexPath).row )
         collectionView.reloadData()
+
     }
+    
+    //func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath:IndexPath) {
+    //}
     
     
 }

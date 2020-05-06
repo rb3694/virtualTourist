@@ -14,6 +14,8 @@ public class VTMapPinArrayEntry
 {
     var images = [UIImage]()
     var annotation : MKPointAnnotation
+    let cellLimit = 10
+    var collection : UICollectionView? = nil
 
     // MARK: Initializers
     
@@ -53,13 +55,22 @@ public class VTMapPinArrayEntry
         }
     }
     
+    func reloadImages() {
+        for index in 0..<images.count {
+            images[index] = UIImage( named: "noPhoto" )!
+        }
+        if let collection = collection {
+            collection.reloadData()
+        }
+        self.loadImages()
+    }
+    
     func loadImages() {
-        VTClient.sharedInstance().retrieveImagesByLocation( latitude: self.annotation.coordinate.latitude, longitude: self.annotation.coordinate.longitude, limit: 10, withPageNumber: nil ) { ( result, error ) in
+        VTClient.sharedInstance().retrieveImagesByLocation( latitude: self.annotation.coordinate.latitude, longitude: self.annotation.coordinate.longitude, limit: cellLimit, withPageNumber: nil ) { ( result, error ) in
             guard let result = result else {
                 print( "No results returned, error: " + (error?.localizedDescription ?? "nil") )
                 return
             }
-            // Need to retreive with page number to get random page.
             guard let photoArray = result[VTClient.FlickrResponseKeys.Photo] as? [[String:AnyObject]] else {
                 return
             }
@@ -69,15 +80,24 @@ public class VTMapPinArrayEntry
                     print( "Cannot find key '\(VTClient.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
                     return
                 }
-                let myIndex = self.images.count
-                self.images.append( UIImage( named: "noPhoto" )! )
+                if ( photoIndex >= self.images.count ) {
+                    self.images.append( UIImage( named: "noPhoto" )! )
+                    if let collection = self.collection {
+                        performUIUpdatesOnMain {
+                            collection.reloadData()
+                        }
+                    }
+                }
 
                 // if an image exists at the url, set the image and title
                 let imageURL = URL(string: imageUrlString)
                 if let imageData = try? Data(contentsOf: imageURL!) {
-                    self.images[myIndex] = UIImage( data: imageData )!
+                    self.images[photoIndex] = UIImage( data: imageData )!
+                    // print( "Got an image! Index = \(photoIndex), URL = \(imageUrlString)" )
                     performUIUpdatesOnMain {
-                        // print( "Got an image! Index = \(photoIndex), URL = \(imageUrlString)" )
+                        if let collection = self.collection {
+                            collection.reloadData()
+                        }
                         // self.photoImageView.image = UIImage(data: imageData)
                         // self.photoTitleLabel.text = photoTitle ?? "(Untitled)"
                     }

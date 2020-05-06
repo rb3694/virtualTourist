@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		150B45002458A342003EF5CD /* GCDBlackBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150B44FF2458A342003EF5CD /* GCDBlackBox.swift */; };
-		150B45032458AA1B003EF5CD /* VTPhotoAblumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150B45022458AA1B003EF5CD /* VTPhotoAblumCell.swift */; };
+		150B45032458AA1B003EF5CD /* VTPhotoAlbumCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150B45022458AA1B003EF5CD /* VTPhotoAlbumCell.swift */; };
 		150B45052458D531003EF5CD /* VTConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150B45042458D531003EF5CD /* VTConvenience.swift */; };
 		15E0FA632453528600CD907E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA622453528600CD907E /* AppDelegate.swift */; };
 		15E0FA652453528600CD907E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA642453528600CD907E /* SceneDelegate.swift */; };
@@ -25,7 +25,7 @@
 
 /* Begin PBXFileReference section */
 		150B44FF2458A342003EF5CD /* GCDBlackBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GCDBlackBox.swift; sourceTree = "<group>"; };
-		150B45022458AA1B003EF5CD /* VTPhotoAblumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTPhotoAblumCell.swift; sourceTree = "<group>"; };
+		150B45022458AA1B003EF5CD /* VTPhotoAlbumCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTPhotoAlbumCell.swift; sourceTree = "<group>"; };
 		150B45042458D531003EF5CD /* VTConvenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTConvenience.swift; sourceTree = "<group>"; };
 		15E0FA5F2453528600CD907E /* virtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = virtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15E0FA622453528600CD907E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				15E0FA682453528600CD907E /* Main.storyboard */,
-				150B45022458AA1B003EF5CD /* VTPhotoAblumCell.swift */,
+				150B45022458AA1B003EF5CD /* VTPhotoAlbumCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -195,7 +195,7 @@
 				15E0FA8424539CDB00CD907E /* VTClient.swift in Sources */,
 				15E0FA652453528600CD907E /* SceneDelegate.swift in Sources */,
 				150B45052458D531003EF5CD /* VTConvenience.swift in Sources */,
-				150B45032458AA1B003EF5CD /* VTPhotoAblumCell.swift in Sources */,
+				150B45032458AA1B003EF5CD /* VTPhotoAlbumCell.swift in Sources */,
 				15E0FA7D2453778B00CD907E /* PhotoAlbumViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
