@@ -98,12 +98,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        print( "in collectionView...shouldSelectItemAt \((indexPath as NSIndexPath).row)" )
+        // print( "in collectionView...shouldSelectItemAt \((indexPath as NSIndexPath).row)" )
         return true
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print( "In collectionView...didSelectItemAt \((indexPath as NSIndexPath).row) " )
+        // print( "In collectionView...didSelectItemAt \((indexPath as NSIndexPath).row) " )
         photoAlbum!.images.remove( at: (indexPath as NSIndexPath).row )
         collectionView.reloadData()
 

@@ -61,13 +61,13 @@
                                 <rect key="frame" x="-1" y="88" width="416" height="760"/>
                                 <subviews>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="aXo-Wm-jDl">
-                                        <rect key="frame" x="0.0" y="0.0" width="416" height="262"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="416" height="150"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="262" id="s8O-jH-Kam"/>
+                                            <constraint firstAttribute="height" constant="150" id="eqD-mk-vto"/>
                                         </constraints>
                                     </mapView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="9sQ-7b-7pb">
-                                        <rect key="frame" x="0.0" y="266" width="416" height="460"/>
+                                        <rect key="frame" x="0.0" y="154" width="416" height="552"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="viX-sT-5MG">
                                             <size key="itemSize" width="159" height="169"/>
@@ -101,7 +101,11 @@
                                         </connections>
                                     </collectionView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHr-zg-TAO">
-                                        <rect key="frame" x="0.0" y="730" width="416" height="30"/>
+                                        <rect key="frame" x="0.0" y="710" width="416" height="50"/>
+                                        <color key="backgroundColor" systemColor="systemGray4Color" red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="R6a-to-F1h"/>
+                                        </constraints>
                                         <state key="normal" title="New Collection"/>
                                         <connections>
                                             <action selector="newCollectionRequested:" destination="19k-ys-d1J" eventType="touchUpInside" id="QX3-XB-IJj"/>
@@ -110,6 +114,8 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="EHr-zg-TAO" firstAttribute="top" secondItem="9sQ-7b-7pb" secondAttribute="bottom" constant="4" id="PqD-J3-n57"/>
+                                    <constraint firstItem="aXo-Wm-jDl" firstAttribute="top" secondItem="UWL-ug-DMl" secondAttribute="top" id="SPK-sq-FzW"/>
+                                    <constraint firstItem="9sQ-7b-7pb" firstAttribute="top" secondItem="aXo-Wm-jDl" secondAttribute="bottom" constant="4" id="mP2-ag-WTm"/>
                                 </constraints>
                             </stackView>
                         </subviews>

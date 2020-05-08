@@ -108,21 +108,4 @@ public class VTMapPinArrayEntry
         }
     }
     
-    func mapPinImagesFromResults(_ results: [String:AnyObject]) -> [UIImage] {
-        
-        var imageArray = [UIImage]()
-        
-        if let results = results[VTClient.FlickrResponseKeys.Photo] as? [[String:AnyObject]] {
-            // Reinitialize the images array
-            self.images = [UIImage]()
-            // iterate through array of dictionaries, each result is a dictionary
-            //for result in results {
-            // Create a map pin image from the result and add it to the images array
-                //imageArray.append(UIImage( named: "imageLoading" ) )
-            //}
-        }
-        
-        return imageArray
-    }
-
 }
