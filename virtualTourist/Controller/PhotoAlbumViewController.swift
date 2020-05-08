@@ -25,6 +25,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     // MARK: - Lifecycle Events
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+           
+        self.collectionView.delegate = self
+        self.collectionView.dataSource = self
+        self.collectionView.isUserInteractionEnabled = true
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear( animated )
         for pin in VTClient.sharedInstance().pins {
@@ -53,9 +61,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear( animated )
         photoAlbum?.collection = nil
     }
-
+    
+    // MARK: Actions
+    
     @IBAction func newCollectionRequested(_ sender: Any) {
         // print( "newCollectionRequested" )
         photoAlbum?.reloadImages()
@@ -65,12 +76,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     // MARK: UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let theDelegate : NSObject = collectionView.delegate as? NSObject {
-            if ( self == theDelegate )
-            {
-                print( "I am the delegate, so why am I not being called?" )
-            }
+        if photoAlbum == nil || photoAlbum?.images == nil  || (photoAlbum?.images.count)! < 1 {
+            reloadButton.setTitle( "No Images", for: .normal )
+        } else {
+            reloadButton.setTitle( "New Collection", for: .normal )
         }
+
         // print( "In collectionView...numberOfItemsInSection" )
         // print( "Returning \(photoAlbum!.images.count)" )
         return photoAlbum!.images.count
