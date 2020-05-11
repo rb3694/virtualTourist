@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let defaultMapCenter = CLLocationCoordinate2D( latitude: 38.63, longitude: -90.20 )
     let defaultSpan = MKCoordinateSpan( latitudeDelta: 37.0, longitudeDelta: 22.0 )
 
+    // As of iOS 13 - window is injected in SceneDelegate, not AppDelegate.
+    //  Go there to see dataController setup code
+    
     func checkIfFirstLaunch() {
         if !UserDefaults.standard.bool(forKey: VTClient.Defaults.HasLaunched) {
             UserDefaults.standard.set(true, forKey: VTClient.Defaults.HasLaunched)

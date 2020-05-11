@@ -9,28 +9,104 @@
 import UIKit
 import MapKit
 import Foundation
+import CoreData
 
 class MapViewController: UIViewController, MKMapViewDelegate {
     
     let segueId = "mapToAlbumSegue"
     let reuseId = "MapPin"
+    var dataController : DataController!
     var selectedAnnotation : MKPointAnnotation?
-    
+    var fetchedResultsController:NSFetchedResultsController<VTMapPin>!
+
     @IBOutlet weak var mapView: MKMapView!
     
+    // MARK:  CoreData
+    
+    func addPin( latitude: Double, longitude: Double ) -> VTMapPin {
+        let pinToAdd = VTMapPin( context: dataController.viewContext )
+        pinToAdd.latitude = latitude
+        pinToAdd.longitude = longitude
+        do {
+            try dataController.viewContext.save()
+        } catch let error as NSError {
+            let alert = UIAlertController(title: "CoreData Failure", message: "Unable to insert pin into CoreData: Error \(error.localizedDescription), \(error.userInfo)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "CoreData Failed", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        return pinToAdd
+    }
+    
+    func deletePin(at indexPath: IndexPath) {
+        let pinToDel = fetchedResultsController.object(at: indexPath )
+        dataController.viewContext.delete(pinToDel)
+        do {
+            try dataController.viewContext.save()
+        } catch let error as NSError {
+            let alert = UIAlertController(title: "CoreData Failure", message: "Unable to delete pin from CoreData: Error \(error.localizedDescription), \(error.userInfo)", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "CoreData Failed", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest:NSFetchRequest<VTMapPin> = VTMapPin.fetchRequest()
+        //let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        //fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.sortDescriptors = []
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "virtualTourist" )
+        // fetchedResultsController.delegate = self
+        do {
+            print( "Performing fetch" )
+            try fetchedResultsController.performFetch()
+            
+        } catch {
+            fatalError( "The fetch could not be performed. \(error.localizedDescription)" )
+        }
+        
+        for pin in fetchedResultsController.fetchedObjects! as [VTMapPin] {
+            mapView.addAnnotation( pin.annotation() )
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let mapCenter = CLLocationCoordinate2D( latitude: UserDefaults.standard.double(forKey: VTClient.Defaults.MapCenterLatitude ), longitude: UserDefaults.standard.double(forKey: VTClient.Defaults.MapCenterLongitude) )
         let mapSpan = MKCoordinateSpan( latitudeDelta: UserDefaults.standard.double(forKey: VTClient.Defaults.MapLatDelta), longitudeDelta: UserDefaults.standard.double(forKey: VTClient.Defaults.MapLongDelta) )
         let mapRegion = MKCoordinateRegion(center: mapCenter, span: mapSpan)
         mapView.setRegion(mapRegion, animated: true)
-        let mapLatDelta = mapView.region.span.latitudeDelta
-        let mapLongDelta = mapView.region.span.longitudeDelta
-        print( "MapView.span.latitudeDelta = \(mapLatDelta)" )
-        print( "MapView.span.longitudeDelta = \(mapLongDelta)" )
-        print( "MapViewController: viewDidLoad()" )
+        
+        let t = type( of: self )
+        print( "\(t) viewDidLoad" )
+        print( "viewDidLoad: setting up fetchedResultsController" )
+        setupFetchedResultsController()
+
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        let t = type( of: self )
+        print( "\(t) viewWillAppear" )
+        if ( nil == fetchedResultsController )
+        {
+            print( "viewWillAppear: Setting up fetchedResultsController" )
+            setupFetchedResultsController()
+        }
+
+        for pin in fetchedResultsController.fetchedObjects! as [VTMapPin] {
+            mapView.addAnnotation( pin.annotation() )
+        }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        let t = type( of: self )
+        print( "\(t) viewDidDisappear. Tearing down fetchedResultsController" )
+        fetchedResultsController = nil
+    }
+
     // MARK: - MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool ) {
@@ -49,8 +125,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView!.canShowCallout = true
             pinView!.pinTintColor = .red
             pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-            let newPin = VTMapPinArrayEntry( latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude )
-            VTClient.sharedInstance().pins.append( newPin )
         } else {
             pinView!.annotation = annotation
         }
@@ -74,10 +148,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if ( press.state == .ended ) {
             let location = press.location(in: mapView)
             let coordinates = mapView.convert(location, toCoordinateFrom: mapView )
-            let newPin = VTMapPinArrayEntry( latitude: coordinates.latitude, longitude: coordinates.longitude )
-            VTClient.sharedInstance().pins.append( newPin )
+            let newPin = addPin( latitude: coordinates.latitude, longitude: coordinates.longitude )
             newPin.loadImages()
-            mapView.addAnnotation( newPin.annotation )
+            mapView.addAnnotation( newPin.annotation() )
         }
     }
     

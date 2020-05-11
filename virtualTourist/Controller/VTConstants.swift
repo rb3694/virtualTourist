@@ -10,6 +10,12 @@ import Foundation
 
 extension VTClient {
     
+    // MARK: Configuration
+    
+    struct Configuration {
+        static let CellLimit = 10
+    }
+    
     // MARK: Defaults
     
     struct Defaults {
