@@ -15,14 +15,37 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     let segueId = "mapToAlbumSegue"
     let reuseId = "MapPin"
+    
     var dataController : DataController!
     var selectedAnnotation : MKPointAnnotation?
+    var selectedPin : VTMapPin?
     var fetchedResultsController:NSFetchedResultsController<VTMapPin>!
 
     @IBOutlet weak var mapView: MKMapView!
     
     // MARK:  CoreData
     
+    // Get a list of the user's predefined pins from CoreData
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest:NSFetchRequest<VTMapPin> = VTMapPin.fetchRequest()
+        fetchRequest.sortDescriptors = []
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "virtualTourist" )
+        // fetchedResultsController.delegate = self
+        do {
+            // print( "Performing fetch" )
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError( "The fetch could not be performed. \(error.localizedDescription)" )
+        }
+        
+        // Add the pins we just retrieved to the amp
+        for pin in fetchedResultsController.fetchedObjects! as [VTMapPin] {
+            mapView.addAnnotation( pin.annotation() )
+        }
+    }
+
+    // Add a new pin to the map and to CoreData
     func addPin( latitude: Double, longitude: Double ) -> VTMapPin {
         let pinToAdd = VTMapPin( context: dataController.viewContext )
         pinToAdd.latitude = latitude
@@ -34,11 +57,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             alert.addAction(UIAlertAction(title: "CoreData Failed", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+        // Refetch so new pin will be in fetchedResults
+        try? fetchedResultsController.performFetch()
         return pinToAdd
     }
     
+    // Delete a pin from the map and from CoreData
+    // Note:  we don't have a GUI widget to initiate this!
     func deletePin(at indexPath: IndexPath) {
+        // This code hasn't really been tested yet, since there is nothing on the GUI to call it
         let pinToDel = fetchedResultsController.object(at: indexPath )
+        mapView.removeAnnotation( pinToDel.annotation() )
         dataController.viewContext.delete(pinToDel)
         do {
             try dataController.viewContext.save()
@@ -47,75 +76,49 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             alert.addAction(UIAlertAction(title: "CoreData Failed", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         }
+        // Refetch so deleted pin will be removed from fetchedResults
+        try? fetchedResultsController.performFetch()
     }
-
-    fileprivate func setupFetchedResultsController() {
-        let fetchRequest:NSFetchRequest<VTMapPin> = VTMapPin.fetchRequest()
-        //let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-        //fetchRequest.sortDescriptors = [sortDescriptor]
-        fetchRequest.sortDescriptors = []
-        
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "virtualTourist" )
-        // fetchedResultsController.delegate = self
-        do {
-            print( "Performing fetch" )
-            try fetchedResultsController.performFetch()
-            
-        } catch {
-            fatalError( "The fetch could not be performed. \(error.localizedDescription)" )
-        }
-        
-        for pin in fetchedResultsController.fetchedObjects! as [VTMapPin] {
-            mapView.addAnnotation( pin.annotation() )
-        }
-    }
+    
+    // MARK:  View LifeCycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Get the map center and zoom level from user defaults
         let mapCenter = CLLocationCoordinate2D( latitude: UserDefaults.standard.double(forKey: VTClient.Defaults.MapCenterLatitude ), longitude: UserDefaults.standard.double(forKey: VTClient.Defaults.MapCenterLongitude) )
         let mapSpan = MKCoordinateSpan( latitudeDelta: UserDefaults.standard.double(forKey: VTClient.Defaults.MapLatDelta), longitudeDelta: UserDefaults.standard.double(forKey: VTClient.Defaults.MapLongDelta) )
         let mapRegion = MKCoordinateRegion(center: mapCenter, span: mapSpan)
         mapView.setRegion(mapRegion, animated: true)
         
-        let t = type( of: self )
-        print( "\(t) viewDidLoad" )
-        print( "viewDidLoad: setting up fetchedResultsController" )
+        // Initialize CoreData and load the model
         setupFetchedResultsController()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let t = type( of: self )
-        print( "\(t) viewWillAppear" )
         if ( nil == fetchedResultsController )
         {
-            print( "viewWillAppear: Setting up fetchedResultsController" )
             setupFetchedResultsController()
-        }
-
-        for pin in fetchedResultsController.fetchedObjects! as [VTMapPin] {
-            mapView.addAnnotation( pin.annotation() )
         }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        let t = type( of: self )
-        print( "\(t) viewDidDisappear. Tearing down fetchedResultsController" )
         fetchedResultsController = nil
     }
 
     // MARK: - MKMapViewDelegate
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool ) {
+        // Remember the map center and zoom level - store in user defaults
         UserDefaults.standard.set( mapView.region.center.latitude, forKey: VTClient.Defaults.MapCenterLatitude)
         UserDefaults.standard.set( mapView.region.center.longitude, forKey: VTClient.Defaults.MapCenterLongitude)
         UserDefaults.standard.set( mapView.region.span.latitudeDelta, forKey: VTClient.Defaults.MapLatDelta )
         UserDefaults.standard.set( mapView.region.span.longitudeDelta, forKey: VTClient.Defaults.MapLongDelta )
     }
 
+    // Data source for map pins
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
@@ -139,27 +142,41 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if control == view.rightCalloutAccessoryView {
             selectedAnnotation = view.annotation as? MKPointAnnotation
             mapView.deselectAnnotation( view.annotation, animated: true )
-            performSegue( withIdentifier: segueId, sender: self )
+
+            // Find the VTMapPin object that corresponds to the GUI pin that was clicked
+            for pin in (fetchedResultsController.fetchedObjects ?? []) as [VTMapPin] {
+                if pin.latitude == selectedAnnotation?.coordinate.latitude && pin.longitude == selectedAnnotation?.coordinate.longitude {
+                    // Found the pin.  Segue and abort search for other matches.
+                    selectedPin = pin
+                    performSegue( withIdentifier: segueId, sender: self )
+                    return
+                }
+            }
         }
+        print( "###### ERROR: Unable to find selected pin!" )
     }
     
+    // Handle a long press and release on the map by adding a new pin at that location
     @IBAction func userPressed(_ sender: Any) {
         let press = sender as! UILongPressGestureRecognizer
         if ( press.state == .ended ) {
             let location = press.location(in: mapView)
             let coordinates = mapView.convert(location, toCoordinateFrom: mapView )
             let newPin = addPin( latitude: coordinates.latitude, longitude: coordinates.longitude )
-            newPin.loadImages()
-            mapView.addAnnotation( newPin.annotation() )
+            newPin.loadImages( viewController: self, dataController: dataController )
+            let annot = newPin.annotation()
+            mapView.addAnnotation( annot )
         }
     }
     
     // MARK: - Navigation
 
+    // Set up the context to share with the PhotoAlbum view
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == segueId {
             let vc = segue.destination as! PhotoAlbumViewController
-            vc.selectedAnnotation = selectedAnnotation
+            vc.dataController = dataController
+            vc.selectedPin = selectedPin
         }
     }
 

@@ -21,13 +21,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         
         // Hopefully this will only happen once:
-        print( "****************************************" )
-        print( "Scene Delegate setting up dataController" )
-        print( "****************************************" )
+        //print( "****************************************" )
+        //print( "Scene Delegate setting up dataController" )
+        //print( "****************************************" )
         if !loaded {
-            dataController.load {
-                //update the main UI
-            }
+            dataController.load()
         }
         
         let navigationController = window?.rootViewController as! UINavigationController

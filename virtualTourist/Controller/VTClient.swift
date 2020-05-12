@@ -15,7 +15,7 @@ class VTClient : NSObject {
 
     // shared session
     var session = URLSession.shared
-    var pins = [VTMapPinArrayEntry]()
+    var collection : UICollectionView?
     lazy var geocoder = CLGeocoder()
 
     // MARK: httpTask
@@ -107,15 +107,6 @@ class VTClient : NSObject {
         task.resume()
         
         return task
-    }
-    
-    // substitute the key for the value that is contained within the method name
-    func substituteKeyInMethod(_ method: String, key: String, value: String) -> String? {
-        if method.range(of: "{\(key)}") != nil {
-            return method.replacingOccurrences(of: "{\(key)}", with: value)
-        } else {
-            return nil
-        }
     }
     
     // given raw JSON, return a usable Foundation object

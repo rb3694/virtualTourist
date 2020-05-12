@@ -13,7 +13,7 @@ extension VTClient {
     // MARK: Configuration
     
     struct Configuration {
-        static let CellLimit = 10
+        static let CellLimit = 25
     }
     
     // MARK: Defaults

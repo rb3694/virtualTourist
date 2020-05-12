@@ -20,7 +20,6 @@
 		15E0FA722453528700CD907E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 15E0FA702453528700CD907E /* LaunchScreen.storyboard */; };
 		15E0FA7A2453774600CD907E /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA792453774600CD907E /* MapViewController.swift */; };
 		15E0FA7D2453778B00CD907E /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA7C2453778B00CD907E /* PhotoAlbumViewController.swift */; };
-		15E0FA802453780000CD907E /* VTMapPinArrayEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA7F2453780000CD907E /* VTMapPinArrayEntry.swift */; };
 		15E0FA8224539A6600CD907E /* VTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA8124539A6600CD907E /* VTConstants.swift */; };
 		15E0FA8424539CDB00CD907E /* VTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E0FA8324539CDB00CD907E /* VTClient.swift */; };
 /* End PBXBuildFile section */
@@ -41,7 +40,6 @@
 		15E0FA732453528700CD907E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		15E0FA792453774600CD907E /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		15E0FA7C2453778B00CD907E /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
-		15E0FA7F2453780000CD907E /* VTMapPinArrayEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTMapPinArrayEntry.swift; sourceTree = "<group>"; };
 		15E0FA8124539A6600CD907E /* VTConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTConstants.swift; sourceTree = "<group>"; };
 		15E0FA8324539CDB00CD907E /* VTClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VTClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,7 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				15E0FA6B2453528600CD907E /* VirtualTourist.xcdatamodeld */,
-				15E0FA7F2453780000CD907E /* VTMapPinArrayEntry.swift */,
 				15C93ED82469ECCE00AFDD8E /* DataController.swift */,
 				15C93EDA2469F18000AFDD8E /* VTMapPin+Extensions.swift */,
 			);
@@ -194,7 +191,6 @@
 			files = (
 				15E0FA6D2453528600CD907E /* VirtualTourist.xcdatamodeld in Sources */,
 				15C93ED92469ECCE00AFDD8E /* DataController.swift in Sources */,
-				15E0FA802453780000CD907E /* VTMapPinArrayEntry.swift in Sources */,
 				15C93EDB2469F18000AFDD8E /* VTMapPin+Extensions.swift in Sources */,
 				15E0FA8224539A6600CD907E /* VTConstants.swift in Sources */,
 				150B45002458A342003EF5CD /* GCDBlackBox.swift in Sources */,

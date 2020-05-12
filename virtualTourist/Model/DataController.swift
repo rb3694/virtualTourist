@@ -44,12 +44,13 @@ class DataController {
 
 extension DataController {
     func autoSaveViewContext( interval: TimeInterval = 30 ) {
-        print( "autosaving...." )
+        // print( "autosaving...." )
         guard interval > 0 else {
             print( "Cannot set negative interval" )
             return
         }
         if viewContext.hasChanges {
+            print( "Changes detected: autosaving..." )
             try? viewContext.save()
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + interval ) {
